@@ -8,10 +8,16 @@ body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 20px;
+}
+
+.main-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .container {
@@ -19,8 +25,8 @@ body {
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    max-width: 400px;
     width: 100%;
+    max-width: 400px;
 }
 
 h2 {
@@ -30,6 +36,7 @@ h2 {
     font-size: 24px;
 }
 
+/* Стили для формы регистрации */
 .form-group {
     margin-bottom: 15px;
 }
@@ -109,6 +116,76 @@ select {
     text-decoration: underline;
 }
 
+/* Стили для калькулятора */
+.calculator {
+    max-width: 350px;
+}
+
+.inputs-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 18px;
+    outline: none;
+}
+
+input[type="number"]:focus {
+    border-color: #4CAF50;
+}
+
+.buttons-row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.buttons-row button {
+    flex: 1;
+    padding: 15px 0;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    background-color: #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.buttons-row button:hover {
+    background-color: #d0d0d0;
+}
+
+.buttons-row button:active {
+    background-color: #b0b0b0;
+}
+
+/* Общие стили для результатов */
+.result {
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.result.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.result.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
 .error-box {
     background: #f8d7da;
     border: 1px solid #f5c6cb;
@@ -121,4 +198,58 @@ select {
 .error-box p {
     margin: 5px 0;
     font-size: 14px;
+}
+
+/* Стили для успешной регистрации */
+.success-box {
+    text-align: center;
+    padding: 30px;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 10px;
+    color: #155724;
+}
+
+.success-box h2 {
+    margin-bottom: 15px;
+    color: #155724;
+}
+
+.user-info {
+    text-align: left;
+    margin: 20px 0;
+    padding: 15px;
+    background: white;
+    border-radius: 5px;
+}
+
+.user-info p {
+    margin: 8px 0;
+    color: #333;
+}
+
+.btn-home {
+    display: inline-block;
+    padding: 10px 25px;
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+.btn-home:hover {
+    background: #5568d3;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .container {
+        max-width: 100%;
+    }
 }
