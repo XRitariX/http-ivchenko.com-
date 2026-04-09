@@ -1,12 +1,36 @@
 <?php
-// Проверяем, что форма отправлена методом POST
+// Проверяем, что запрос пришел методом POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    // --- 1. ВАЛИДАЦИЯ: Проверка передачи полей email и password ---
+
+    // Проверяем, существуют ли ключи 'email' и 'password' в массиве $_POST
+    if (!isset($_POST['email']) || !isset($_POST['password'])) {
+        // Если полей нет
+        echo "<h3>Ошибка: Обязательные поля не переданы!</h3>";
+        echo "<p>Пожалуйста, заполните поля Email и Password.</p>";
+        echo "<a href='index.php'>Вернуться к регистрации</a>";
+        exit; // Останавливаем выполнение скрипта
+    }
+
+    // Получаем значения (trim удаляет пробелы по краям)
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+
+    // Проверяем, не пустые ли поля (если передали пустые строки "")
+    if (empty($email) || empty($password)) {
+        echo "<h3>Ошибка: Поля не могут быть пустыми!</h3>";
+        echo "<p>Поля Email и Password должны содержать данные.</p>";
+        echo "<a href='index.php'>Вернуться к регистрации</a>";
+        exit; // Останавливаем выполнение скрипта
+    }
+
+
+    // --- 2. ОСТАЛЬНАЯ ЛОГИКА (Если проверки пройдены) ---
     
     // Получаем и очищаем данные
     $name = htmlspecialchars(trim($_POST['name'] ?? ''));
-    $email = htmlspecialchars(trim($_POST['email'] ?? ''));
     $gender = htmlspecialchars(trim($_POST['gender'] ?? ''));
-    $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     $agree = isset($_POST['agree']);
     
@@ -19,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     
     // Валидация email
-    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "Введите корректный адрес почты";
     }
     
@@ -30,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     
     // Валидация пароля
-    if (empty($password) || mb_strlen($password) < 6) {
+    if (mb_strlen($password) < 6) {
         $errors[] = "Пароль должен содержать минимум 6 символов";
     }
     
@@ -46,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     
     // Если есть ошибки - возвращаемся на форму с сообщениями
     if (!empty($errors)) {
-        // Сохраняем ошибки в сессии (если нужна)
+        // Сохраняем ошибки в сессии
         session_start();
         $_SESSION['errors'] = $errors;
         $_SESSION['old_input'] = $_POST;
@@ -114,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <h2>✅ Регистрация успешна!</h2>
                 <div class="user-info">
                     <p><strong>Имя:</strong> <?php echo $name; ?></p>
-                    <p><strong>Почта:</strong> <?php echo $email; ?></p>
+                    <p><strong>Почта:</strong> <?php echo htmlspecialchars($email); ?></p>
                     <p><strong>Пол:</strong> 
                         <?php 
                             echo match($gender) {

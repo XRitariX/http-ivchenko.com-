@@ -9,6 +9,19 @@
 <body>
     <div class="container">
         <h2>Регистрация</h2>
+        
+        <?php
+        session_start();
+        if (!empty($_SESSION['errors'])) {
+            echo '<div class="error-box">';
+            foreach ($_SESSION['errors'] as $error) {
+                echo "<p>⚠️ $error</p>";
+            }
+            echo '</div>';
+            unset($_SESSION['errors']);
+        }
+        ?>
+        
         <form action="action.php" method="POST">
             <div class="form-group">
                 <label for="name">Имя:</label>
