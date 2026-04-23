@@ -1,101 +1,129 @@
 <?php
 declare(strict_types=1);
 
+interface FigureInterface {
+    public function getArea(): float;
+}
 
-class Page {
-    private string $name = 'page';
-    private string $template = '<div><p>It is a default page</p></div>';
+// 1, 2) Абстрактный класс Figure со свойствами и абстрактным методом
+abstract class Figure {
+    protected float $area;
+    protected string $color;
+    protected int $sidesCount;
 
-    public function __construct() {}
-
-    
-    public function render(): void {
-        echo $this->template;
+    public function __construct(string $color, int $sidesCount) {
+        $this->color = $color;
+        $this->sidesCount = $sidesCount;
+        $this->area = 0.0;
     }
 
-    public function getName(): string {
-        return $this->name;
+    // 2) Абстрактный метод infoAbout()
+    abstract public function infoAbout(): string;
+}
+
+// 3, 6, 7, 8, 9) Класс Rectangle
+class Rectangle extends Figure implements FigureInterface {
+    public const SIDES_COUNT = 4;
+    private float $a;
+    private float $b;
+
+    public function __construct(string $color, float $a, float $b) {
+        parent::__construct($color, self::SIDES_COUNT);
+        $this->a = $a;
+        $this->b = $b;
+    }
+
+    // 9) Метод getArea()
+    public function getArea(): float {
+        return $this->a * $this->b; // S = a * b
+    }
+
+    // 10) Метод infoAbout()
+    public function infoAbout(): string {
+        return "Это класс прямоугольника. У него " . self::SIDES_COUNT . " стороны.";
     }
 }
 
+// 3, 6, 7, 8, 9) Класс Square
+class Square extends Figure implements FigureInterface {
+    public const SIDES_COUNT = 4;
+    private float $a;
 
-class BlogPage extends Page {
-    private string $name = 'blog';
-    private string $template = '
-        <div class="catalog-container">
-            <h2>Каталог оружия "РКОД ПШИ"</h2>
-            <div class="cards-grid">
-                <div class="card">
-                    <h3>Карабин Сайга-12К</h3>
-                    <p>Гладкоствольное самозарядное оружие, 12 калибр</p>
-                    <span class="price">65 000 ₽</span>
-                </div>
-                <div class="card">
-                    <h3>Пистолет МР-443 "Грач"</h3>
-                    <p>Служебный пистолет под патрон 9×19 мм</p>
-                    <span class="price">42 000 ₽</span>
-                </div>
-                <div class="card">
-                    <h3>Винтовка ТОЗ-8М</h3>
-                    <p>Малокалиберная охотничья винтовка, .22 LR</p>
-                    <span class="price">28 000 ₽</span>
-                </div>
-            </div>
-        </div>';
-
-    public function __construct() {
-        parent::__construct();
+    public function __construct(string $color, float $a) {
+        parent::__construct($color, self::SIDES_COUNT);
+        $this->a = $a;
     }
 
-    public function render(): void {
-        echo $this->template;
+    // 9) Метод getArea()
+    public function getArea(): float {
+        return $this->a * $this->a; // S = a * a
+    }
+
+    // 10) Метод infoAbout()
+    public function infoAbout(): string {
+        return "Это класс квадрата. У него " . self::SIDES_COUNT . " стороны.";
+    }
+}
+
+// 3, 7, 8, 9) Класс Triangle
+class Triangle extends Figure implements FigureInterface {
+    public const SIDES_COUNT = 3;
+    private float $a;
+    private float $b;
+    private float $c;
+
+    public function __construct(string $color, float $a, float $b, float $c) {
+        parent::__construct($color, self::SIDES_COUNT);
+        $this->a = $a;
+        $this->b = $b;
+        $this->c = $c;
+    }
+
+    // 9) Метод getArea() (Формула Герона)
+    public function getArea(): float {
+        $p = ($this->a + $this->b + $this->c) / 2; // полупериметр
+        return sqrt($p * ($p - $this->a) * ($p - $this->b) * ($p - $this->c));
+    }
+
+    // 10) Метод infoAbout()
+    public function infoAbout(): string {
+        return "Это класс треугольника. У него " . self::SIDES_COUNT . " стороны.";
     }
 }
 
 
 echo '<!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>РКОД ПШИ | Оружейный магазин</title>
-    <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f7fa; color: #333; margin: 0; padding: 20px; }
-        nav a { margin-right: 20px; text-decoration: none; color: #0056b3; font-weight: 600; }
-        nav a:hover { text-decoration: underline; }
-        .theme-buttons { margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; }
-        .theme-btn { display: inline-block; padding: 12px 24px; background: #d32f2f; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 500; }
-        .theme-btn.alt { background: #1976d2; }
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
-        .card { background: #fff; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card h3 { margin: 0 0 8px; }
-        .price { display: block; margin-top: 10px; font-weight: bold; color: #2e7d32; }
-        hr { border: 0; border-top: 1px solid #ccc; margin: 15px 0; }
-    </style>
+<head><meta charset="UTF-8"><title>Фигуры</title>
+<style>
+    body { font-family: system-ui, sans-serif; background: #f8f9fa; padding: 20px; }
+    .result { background: #fff; padding: 15px; margin: 10px 0; border-left: 4px solid #0056b3; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .area { font-weight: bold; color: #2e7d32; }
+</style>
 </head>
 <body>
-    <h1>Оружейный магазин "РыбОхота"</h1>';
+<h1> Расчёт площадей геометрических фигур</h1>';
 
+// Прямоугольники
+$rect1 = new Rectangle('красный', 5.0, 10.0);
+$rect2 = new Rectangle('синий', 3.5, 7.0);
 
-echo '<nav>';
-echo '<a href="?page=page">Главная страница</a>';
-echo '<a href="?page=blog">Каталог оружия</a>';
-echo '</nav><hr>';
+// Квадраты
+$sq1 = new Square('зелёный', 6.0);
+$sq2 = new Square('жёлтый', 4.5);
 
+// Треугольники
+$tri1 = new Triangle('оранжевый', 3.0, 4.0, 5.0);
+$tri2 = new Triangle('фиолетовый', 7.0, 8.0, 9.0);
 
-$pageParam = $_GET['page'] ?? 'page';
+// Массив всех фигур для обхода
+$figures = [$rect1, $rect2, $sq1, $sq2, $tri1, $tri2];
 
-if ($pageParam === 'blog') {
-    $currentPage = new BlogPage();
-} else {
-    $currentPage = new Page();
-    
-    echo '<div class="theme-buttons">
-            <a href="?page=license" class="theme-btn"> Оформление лицензии</a>
-            <a href="?page=delivery" class="theme-btn alt">Доставка </a>
-          </div>';
+foreach ($figures as $figure) {
+    echo '<div class="result">';
+    echo '<p><strong>' . $figure->infoAbout() . '</strong></p>';
+    echo '<p class="area">Площадь фигуры: ' . $figure->getArea() . ' кв. ед.</p>';
+    echo '</div>';
 }
-
-$currentPage->render();
 
 echo '</body></html>';
