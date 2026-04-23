@@ -1,96 +1,101 @@
 <?php
-// Задание 1
-echo '<hr style="border: 2px solid red;">';
-echo '<h3>Задание 1</h3>';
-class Worker {
-    public $name;
-    private $age;
-    public $salary;
+declare(strict_types=1);
 
-    public function getName() {
+
+class Page {
+    private string $name = 'page';
+    private string $template = '<div><p>It is a default page</p></div>';
+
+    public function __construct() {}
+
+    
+    public function render(): void {
+        echo $this->template;
+    }
+
+    public function getName(): string {
         return $this->name;
     }
+}
 
-    public function getAge() {
-        return $this->age;
+
+class BlogPage extends Page {
+    private string $name = 'blog';
+    private string $template = '
+        <div class="catalog-container">
+            <h2>Каталог оружия "РКОД ПШИ"</h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <h3>Карабин Сайга-12К</h3>
+                    <p>Гладкоствольное самозарядное оружие, 12 калибр</p>
+                    <span class="price">65 000 ₽</span>
+                </div>
+                <div class="card">
+                    <h3>Пистолет МР-443 "Грач"</h3>
+                    <p>Служебный пистолет под патрон 9×19 мм</p>
+                    <span class="price">42 000 ₽</span>
+                </div>
+                <div class="card">
+                    <h3>Винтовка ТОЗ-8М</h3>
+                    <p>Малокалиберная охотничья винтовка, .22 LR</p>
+                    <span class="price">28 000 ₽</span>
+                </div>
+            </div>
+        </div>';
+
+    public function __construct() {
+        parent::__construct();
     }
 
-    public function getSalary($otherWorker = null) {
-        if ($otherWorker instanceof Worker) {
-            return $this->salary + $otherWorker->salary;
-        }
-        return $this->salary;
-    }
-
-    public function setAge($newAge) {
-        if ($this->checkAge($newAge)) {
-            $this->age = $newAge;
-        } else {
-            echo "Вам работать в нашей компании еще рано<br>";
-        }
-    }
-
-    private function checkAge($age) {
-        return $age >= 18;
+    public function render(): void {
+        echo $this->template;
     }
 }
-echo "Класс Worker создан.<br>";
 
-// Задание 2
-echo '<hr style="border: 2px solid red;">';
-echo '<h3>Задание 2</h3>';
-$worker1 = new Worker();
-$worker1->name = 'Иван';
-$worker1->salary = 45000;
-$worker1->setAge(25);
 
-$worker2 = new Worker();
-$worker2->name = 'Анна';
-$worker2->salary = 60000;
-$worker2->setAge(30);
-echo "Создано 2 объекта. Свойства установлены.<br>";
+echo '<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РКОД ПШИ | Оружейный магазин</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f7fa; color: #333; margin: 0; padding: 20px; }
+        nav a { margin-right: 20px; text-decoration: none; color: #0056b3; font-weight: 600; }
+        nav a:hover { text-decoration: underline; }
+        .theme-buttons { margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; }
+        .theme-btn { display: inline-block; padding: 12px 24px; background: #d32f2f; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 500; }
+        .theme-btn.alt { background: #1976d2; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
+        .card { background: #fff; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card h3 { margin: 0 0 8px; }
+        .price { display: block; margin-top: 10px; font-weight: bold; color: #2e7d32; }
+        hr { border: 0; border-top: 1px solid #ccc; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <h1>Оружейный магазин "РыбОхота"</h1>';
 
-// Задание 3
-echo '<hr style="border: 2px solid red;">';
-echo '<h3>Задание 3</h3>';
-echo "Сумма зарплат: " . ($worker1->salary + $worker2->salary) . "<br>";
-echo "Сумма возрастов: " . ($worker1->getAge() + $worker2->getAge()) . "<br>";
 
-// Задание 4
-echo '<hr style="border: 2px solid red;">';
-echo '<h3>Задание 4</h3>';
-echo "getName: " . $worker1->getName() . "<br>";
+echo '<nav>';
+echo '<a href="?page=page">Главная страница</a>';
+echo '<a href="?page=blog">Каталог оружия</a>';
+echo '</nav><hr>';
 
-// Задание 5
-echo '<hr style="border: 2px solid red;">';
-echo '<h3>Задание 5</h3>';
-echo "getAge: " . $worker2->getAge() . "<br>";
 
-// Задание 6
-echo '<hr style="border: 2px solid red;">';
-echo '<h3>Задание 6</h3>';
-echo "getSalary (без параметров): " . $worker1->getSalary() . "<br>";
+$pageParam = $_GET['page'] ?? 'page';
 
-// Задание 7
-echo '<hr style="border: 2px solid red;">';
-echo '<h3>Задание 7</h3>';
-echo "getSalary (сумма двух объектов): " . $worker1->getSalary($worker2) . "<br>";
+if ($pageParam === 'blog') {
+    $currentPage = new BlogPage();
+} else {
+    $currentPage = new Page();
+    
+    echo '<div class="theme-buttons">
+            <a href="?page=license" class="theme-btn"> Оформление лицензии</a>
+            <a href="?page=delivery" class="theme-btn alt">Доставка </a>
+          </div>';
+}
 
-// Задание 8, 9, 11
-echo '<hr style="border: 2px solid red;">';
-echo '<h3>Задание 8, 9, 11</h3>';
-echo "setAge(20): ";
-$worker1->setAge(20);
-echo "Новый возраст: " . $worker1->getAge() . "<br>";
-echo "setAge(16): ";
-$worker1->setAge(16);
-echo "Возраст остался: " . $worker1->getAge() . "<br>";
+$currentPage->render();
 
-// Задание 10
-echo '<hr style="border: 2px solid red;">';
-echo '<h3>Задание 10</h3>';
-echo "checkAge (логика >= 18):<br>";
-echo "Проверка 25: " . var_export($worker1->getAge() >= 18, true) . "<br>";
-echo "Проверка 16: " . var_export(16 >= 18, true) . "<br>";
-echo "(В задании 11 метод сделан приватным, проверка происходит внутри setAge)<br>";
-?>
+echo '</body></html>';
